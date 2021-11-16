@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, Text, View, StyleSheet, TextInput, Button, ScrollView } from 'react-native';
 import addPicture from '../assets/add-picture-icon.png';
 
-export default function PostForm({ formTitle, titlePlaceHolder, contactPlaceHolder, areaPlaceHolder,channelPlaceHolder }) {
+export default function PostForm({ formTitle, titlePlaceHolder, contactPlaceHolder, areaPlaceHolder,channelPlaceHolder, setVisible }) {
   //form field's states
   const [title, setTitle] = useState('');
   const [contact, setContact] = useState('');
@@ -10,12 +10,15 @@ export default function PostForm({ formTitle, titlePlaceHolder, contactPlaceHold
   const [descr, setdescr] = useState('');
   const [channel, setChannel] = useState('');
   const [pic, setPic] = useState('');
+  
 
   // const saveForm = () => {
   //   //validacion?aFirebase:mostrarErrores (toast)
   // }
   return (
+    
     <ScrollView style={styles.container}>
+      <Text onPress={() => setVisible(false)}>X</Text>
       <Text style={styles.paragraph}>
         {formTitle}
       </Text>
@@ -79,6 +82,13 @@ export default function PostForm({ formTitle, titlePlaceHolder, contactPlaceHold
 };
 
 const styles = StyleSheet.create({
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 30,
+    padding: 5
+  },
   container: {
     flex: 1,
     paddingTop: 20,
