@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Image, Text, StyleSheet, TextInput, Button, ScrollView, View, TouchableHighlight } from 'react-native';
 import { validatePostContactName, validatePostContactNumber, validatePostTitle, validatePostArea } from '../utils/validations';
 import { createPost } from '../database';
+import { DataContext } from '../contexts/GlobalContext';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function PostForm({ formTitle, titlePlaceHolder, areaPlaceHolder, collection }) {
+export default function PostForm({ formTitle, titlePlaceHolder, areaPlaceHolder, collection, setVisible }) {
+  const { user } = useContext(DataContext);
   const [title, setTitle] = useState("");
-  const [contactName, setContactName] = useState("");
+  const [contactName, setContactName] = useState(user.user.providerData[0].displayName);
   const [area, setArea] = useState("");
   const [desc, setDesc] = useState("");
   const [contactNumber, setContactNumber] = useState("");
@@ -28,14 +30,17 @@ export default function PostForm({ formTitle, titlePlaceHolder, areaPlaceHolder,
 
       Toast.show({ type: "error", text1: "Por favor revise el formulario", text2: messageError, })
     } else {
-      let id = await createPost(collection, {
+      await createPost(collection, user, pic, {
         title,
         contactName,
         desc,
         wpp: contactNumber,
-        zone: area
-      })
-      console.log("ejeje el id es:", id);
+        zone: area,
+      });
+      Toast.show({ type: "success", text1: "Se ha creado una publicación con exito" });
+      setTimeout(() => {
+        setVisible(false);
+      }, 3000)
     }
   }
 
@@ -55,7 +60,6 @@ export default function PostForm({ formTitle, titlePlaceHolder, areaPlaceHolder,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1
     })
-    console.log(result);
     if (!result.cancelled) {
       setPic(result.uri);
     }
